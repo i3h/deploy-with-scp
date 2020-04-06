@@ -1,0 +1,32 @@
+name: 'Deploy with SCP'
+description: 'Deploy build assets with scp'
+inputs:
+  src:
+    description: 'Source file/directory'
+    required: true
+  dest:
+    description: 'Destination file/directory'
+    required: true
+  username:
+    description: 'Username of destination server'
+    required: true
+    default: 'root'
+  server-ip:
+    description: 'IP address of destination server'
+    required: true
+  ssh-key:
+    description: 'Private ssh key of destination server'
+    required: true
+  proxy-username:
+    description: 'Username of proxy server'
+    required: false
+    default: 'root'
+  proxy-server-ip:
+    description: 'IP address of proxy server'
+    required: false
+  proxy-ssh-key:
+    description: 'Private ssh key of proxy server'
+    required: false
+runs:
+  using: 'node12'
+  main: 'main.js'
