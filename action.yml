@@ -1,5 +1,6 @@
 name: 'Deploy with SCP'
 description: 'Deploy build assets with scp'
+
 inputs:
   src:
     description: 'Source file/directory'
@@ -27,6 +28,11 @@ inputs:
   proxy-ssh-key:
     description: 'Private ssh key of proxy server'
     required: false
+
 runs:
   using: 'node12'
   main: 'dist/index.js'
+
+branding:
+  icon: box
+  color: yellow
