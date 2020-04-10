@@ -7,7 +7,7 @@ This GitHub Action wraps scp command with ssh jump option.
 ```
 - name: Deploy with SCP
   id: deploy_with_scp
-  uses: noobly314/deploy-with-scp
+  uses: noobly314/deploy-with-scp@v1
   with:
     src: /path/to/source
     dest: /path/to/destination

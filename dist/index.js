@@ -7137,7 +7137,7 @@ exports.FetchError = FetchError;
 const core = __webpack_require__(792);
 const github = __webpack_require__(443);
 const fs = __webpack_require__(747).promises;
-const { exec } = __webpack_require__(129);
+const { exec, spawn } = __webpack_require__(129);
 
 async function run() {
   try {
@@ -7165,12 +7165,28 @@ async function run() {
       await fs.writeFile('.ssh/proxy_ssh_key', proxy_ssh_key, { mode: '600' });
     }
 
-    // scp src root@server_ip:dest
+    // Fix permissions on Windows
+    if (process.platform == 'win32') {
+      let cmd;
+      cmd = 'icacls .ssh/ssh_key /inheritance:r';
+      await exec(cmd);
+      cmd = 'icacls .ssh/ssh_key /grant:r "%username%":"(R)"';
+      await exec(cmd);
+      if (hasProxy) {
+        let cmd;
+        cmd = 'icacls .ssh/proxy_ssh_key /inheritance:r';
+        await exec(cmd);
+        cmd = 'icacls .ssh/proxy_ssh_key /grant:r "%username%":"(R)"';
+        await exec(cmd);
+      }
+    }
+
+    // Execute SCP
     let cmd;
     if (!hasProxy) {
-      cmd = `scp -r -o StrictHostKeyChecking=no -i .ssh/ssh_key ${src} ${username}@${server_ip}:${dest}`;
+      cmd = `scp -r -vvv -o StrictHostKeyChecking=no -i .ssh/ssh_key ${src} ${username}@${server_ip}:${dest}`;
     } else {
-      cmd = `scp -r -o StrictHostKeyChecking=no -i .ssh/ssh_key -o ProxyCommand='ssh -W %h:%p -o StrictHostKeyChecking=no -i .ssh/proxy_ssh_key ${proxy_username}@${proxy_server_ip}' ${src} ${username}@${server_ip}:${dest}`;
+      cmd = `scp -r -vvv -o StrictHostKeyChecking=no -i .ssh/ssh_key -o ProxyCommand='ssh -W %h:%p -o StrictHostKeyChecking=no -i .ssh/proxy_ssh_key ${proxy_username}@${proxy_server_ip}' ${src} ${username}@${server_ip}:${dest}`;
     }
     console.log(cmd);
     exec(cmd, (error, stdout, stderr) => {

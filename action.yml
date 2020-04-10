@@ -11,7 +11,6 @@ inputs:
   username:
     description: 'Username of destination server'
     required: true
-    default: 'root'
   server-ip:
     description: 'IP address of destination server'
     required: true
@@ -21,7 +20,6 @@ inputs:
   proxy-username:
     description: 'Username of proxy server'
     required: false
-    default: 'root'
   proxy-server-ip:
     description: 'IP address of proxy server'
     required: false
